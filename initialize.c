@@ -55,7 +55,7 @@ void	initialize_prompt(char **av, t_env *env)
 				free(line);
 				continue;
 			}
-
+			// function to check every struct and change the value in args to be path
 			exec_command_line(command, command_len, env);
 			
 			// TODO: free command

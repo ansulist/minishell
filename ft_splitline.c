@@ -242,10 +242,19 @@ int fill_structs(char **av, t_cmdop *command)
 void print_struct(t_cmdop *cmd, int len)
 {
 	int i = 0;
+	int j = 0;
 	while (len > i)
 	{
 		printf("name: %s\n", cmd[i].name);
 		printf("op: %d\n", cmd[i].operator);
+		if (cmd->args != NULL)
+		{
+			while (cmd[i].args[j] != NULL)
+			{
+				printf("args: %s\n", cmd[i].args[j]);
+				j++;
+			}
+		}
 		printf("----------------\n\n");
 		i++;
 	}

@@ -16,7 +16,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-bool areStringsEqual(const char *str1, const char *str2)
+bool arestringsequal(const char *str1, const char *str2)
 {
 	while (*str1 && *str2)
 	{
@@ -38,7 +38,7 @@ static void redirect_input_char(t_cmdop *cmd)
 	while (1)
 	{
 		buff = readline("> ");
-		if (areStringsEqual(buff, cmd->args[0] + 1) == true)
+		if (arestringsequal(buff, cmd->name) == true)
 			break;
 		ft_putendl_fd(buff, fd[1]);
 	}
@@ -55,25 +55,25 @@ static void r_input(t_cmdop *cmd)
 	char *error;
 
 	i = 0;
-	if ((cmd + 1)->args[0])
+	if ((cmd + 1)->name)
 	{
-		while (cmd[i].operator== LEFT_REDIRECTION)
+		while (cmd[i].operator == LEFT_REDIRECTION)
 			i++;
 		i = 0;
-		while (cmd[i].operator== LEFT_REDIRECTION)
+		while (cmd[i].operator == LEFT_REDIRECTION)
 			i++;
-		if (access(cmd[i].args[0], F_OK) == 0)
+		if (access(cmd[i].name, F_OK) == 0)
 		{
-			file = open(cmd[i].args[0], O_RDONLY, 0666);
+			file = open(cmd[i].name, O_RDONLY, 0666);
 			dup2(file, STDIN_FILENO);
 		}
 		else
 		{
 			// if fail, give error message
-			error = ft_strjoin("./minishell: ", (cmd + 1)->args[0]);
+			error = ft_strjoin("./minishell: ", (cmd + 1)->name);
 			perror(error);
 			free(error);
-			exit(EXIT_FAILURE);
+			exit(0);
 		}
 	}
 }
@@ -88,38 +88,39 @@ static void r_output(t_cmdop *cmd)
 		i++;
 	{
 		if (cmd[i].operator== RIGHT_REDIRECTION)
-			open(cmd[i + 1].args[0], O_WRONLY | O_TRUNC | O_CREAT, 0666);
+			open(cmd[i + 1].name, O_WRONLY | O_TRUNC | O_CREAT, 0666);
 		else if (cmd[i].operator== DOUBLE_RIGHT_REDIRECTION)
-			open(cmd[i + 1].args[0], O_WRONLY | O_APPEND | O_CREAT, 0666);
+			open(cmd[i + 1].name, O_WRONLY | O_APPEND | O_CREAT, 0666);
 		i++;
 		;
 		close(1);
 	}
 	if (cmd[i].operator== RIGHT_REDIRECTION)
-		open(cmd[i + 1].args[0], O_WRONLY | O_TRUNC | O_CREAT, 0666);
+		open(cmd[i + 1].name, O_WRONLY | O_TRUNC | O_CREAT, 0666);
 	else if (cmd[i].operator== DOUBLE_RIGHT_REDIRECTION)
-		open(cmd[i + 1].args[0], O_WRONLY | O_APPEND | O_CREAT, 0666);
+		open(cmd[i + 1].name, O_WRONLY | O_APPEND | O_CREAT, 0666);
 }
 
 int redirect_exec(t_cmdop *cmd, t_env *env, int len)
 {
-	//t_cmdop *tmp;
+	t_cmdop *tmp;
 
-	//tmp = cmd;
+	tmp = cmd;
 	// function to give output to the next cmd
-	if (cmd->operator== DOUBLE_LEFT_REDIRECTION)
+	if (cmd->operator == LEFT_REDIRECTION)
 		r_input(cmd);
-	// to give the output of whatever you wtite until one specific char
-	else if (cmd->operator== LEFT_REDIRECTION)
+	// to give the output of whatever you wtite until the char is matched
+	else if (cmd->operator == DOUBLE_LEFT_REDIRECTION)
 		redirect_input_char(cmd);
 	// function to give output to the next cmd
 	else
 		r_output(cmd);
+	tmp->operator = NONE;
 	while (cmd->operator!= NONE && cmd->operator!= PIPE)
 		// just exec command;
-		if (cmd->operator== NONE)
-			exec_command(cmd, env);
-		else
-			pipeline_exec(cmd, env, len);
+	if (cmd->operator== NONE)
+		exec_command(cmd, env);
+	else
+		pipeline_exec(cmd, env, len);
 	return (0);
 }

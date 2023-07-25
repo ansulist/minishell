@@ -78,12 +78,26 @@ static char *get_path_bin(t_env *env, char *cmd)
     return (NULL);
 }
 
+void print_2d_array(char **str)
+{
+	int i;
+
+	i = 0;
+	while (str[i] != NULL)
+	{
+		printf ("%s\n", str[i]);
+		i++;
+	}
+}
+
 void    binary_command(t_env *env, char *cmd, char **args, int nb_args)
 {
     char *path_bin;
+	char **envp;
 	char **execve_args;
 	int i;
 
+	envp = NULL;
 	path_bin = get_path_bin(env, cmd);
 	if (path_bin == NULL)
 		return;
@@ -102,10 +116,12 @@ void    binary_command(t_env *env, char *cmd, char **args, int nb_args)
 		i++;
 	}
 	execve_args[i + 1] = NULL;
-
+	print_2d_array(envp);
 	// Need to fork before
-	if(execve(path_bin, execve_args, NULL) == -1)
+	if(execve(path_bin, execve_args, envp) == -1)
 		perror("error");
+	// free 2D array
+	free(envp);
 	free(execve_args);
 	free(path_bin);
 

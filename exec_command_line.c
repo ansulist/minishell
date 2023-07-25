@@ -1,5 +1,14 @@
 #include "minishell.h"
 
+int	print_env_value(t_env *env, char *key)
+{
+	char *str;
+	
+	str = my_getenv(env, key);
+	printf("%s\n", str);
+	return (0);
+}
+
 // execute the buildins and binary commands
 int exec_command(t_cmdop *cmd, t_env *env)
 {
@@ -54,6 +63,7 @@ int exec_command_line(t_cmdop *command_line, int len, t_env *env)
 		else if ((command_line + 1)->operator== PIPE)
 			 pipeline_exec(command_line, env, len);
 		else {
+			redirect_exec(command_line, env, len);
 			// TODO: handle redirection
 		}
 		exit(0);
