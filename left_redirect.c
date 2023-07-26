@@ -11,95 +11,65 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdbool.h>
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
-/*
-static void r_input(t_cmdop *cmd)
-{
-	int file;
-	int i;
-	char *error;
+int right(t_cmdop *cmd, int len, int pipe_fd[2]) {
+	int fd;
+	char buf[42];
+	int nb;
 
-	i = 0;
-	if (cmd->name)
-	{
-		while (cmd[i].operator == LEFT_REDIRECTION)
-			i++;
-		i = 0;
-		while (cmd[i].operator == LEFT_REDIRECTION)
-			i++;
-		if (access(cmd[i].name, F_OK) == 0)
+	close(pipe_fd[0]);
+	// We need to send all files contents to parent through pipe
+	while (len > 0 && cmd->operator == LEFT_REDIRECTION) {
+		if (access(cmd->name, F_OK) == 0)
 		{
-			file = open(cmd[i].name, O_RDONLY, 0666);
-			dup2(file, STDIN_FILENO);
+			fd = open(cmd->name, O_RDONLY, 0666);
+			while (1) {
+				nb = read(fd, buf, 42);
+				if (nb <= 0)
+					break;
+				if (write(pipe_fd[1], buf, nb) == -1) {
+					close(pipe_fd[1]);
+					return (-1);
+				}
+			}
+			close(fd);
 		}
 		else
 		{
-			// if fail, give error message
-			error = ft_strjoin("./minishell: ", (cmd + 1)->name);
-			perror(error);
-			free(error);
+			perror("./minishell: ");
+			close(pipe_fd[1]);
 			exit(0);
 		}
+		cmd++;
+		len--;
 	}
-}
-
-static void r_output(t_cmdop *cmd)
-{
-	int i;
-
-	i = 0;
-	close(STDOUT_FILENO);
-	while (cmd[i].operator== RIGHT_REDIRECTION || cmd[i].operator== DOUBLE_RIGHT_REDIRECTION)
-		i++;
-	{
-		if (cmd[i].operator== RIGHT_REDIRECTION)
-			open(cmd[i + 1].name, O_WRONLY | O_TRUNC | O_CREAT, 0666);
-		else if (cmd[i].operator== DOUBLE_RIGHT_REDIRECTION)
-			open(cmd[i + 1].name, O_WRONLY | O_APPEND | O_CREAT, 0666);
-		i++;
-		;
-		close(1);
-	}
-	if (cmd[i].operator== RIGHT_REDIRECTION)
-		open(cmd[i + 1].name, O_WRONLY | O_TRUNC | O_CREAT, 0666);
-	else if (cmd[i].operator== DOUBLE_RIGHT_REDIRECTION)
-		open(cmd[i + 1].name, O_WRONLY | O_APPEND | O_CREAT, 0666);
-}
-
-int redirect_exec(t_cmdop *cmd, t_env *env, int len)
-{
-	t_cmdop *tmp;
-
-	tmp = cmd;
-	// function to give output to the next cmd
-	if (cmd->operator == LEFT_REDIRECTION)
-		r_input(cmd);
-	// to give the output of whatever you wtite until the char is matched
-	else if (cmd->operator == DOUBLE_LEFT_REDIRECTION)
-		redirect_input_char(cmd);
-	// function to give output to the next cmd
-	else
-		r_output(cmd);
-	tmp->operator = NONE;
-	while (cmd->operator!= NONE && cmd->operator!= PIPE)
-		// just exec command;
-	if (cmd->operator== NONE)
-		exec_command(cmd, env);
-	else
-		pipeline_exec(cmd, env, len);
+	close(pipe_fd[1]);
 	return (0);
 }
-*/
-
 
 int    left_redirect_exec(t_cmdop *cmd, t_env *env, int len)
 {
-	(void)cmd;
-	(void)env;
-	(void)len;
+	pid_t childpid;
+	int fd[2];
+	int temp;
+
+	// make the exit function to quit
+	if (pipe(fd) == -1)
+		return (-1);
+	childpid = fork();
+	// make the exit function to quit
+	if (childpid == -1)
+		return (-1);
+	if (childpid == 0)
+	{
+		right(cmd + 1, len - 1, fd);
+		exit(0);
+	}
+	close(fd[1]);
+	dup2(fd[0], STDIN_FILENO);
+	close(fd[0]);
+	exec_command(cmd, env);
+	close(fd[0]);
+	waitpid(childpid, &temp, 0);
 	return (0);
 }

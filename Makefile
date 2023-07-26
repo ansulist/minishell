@@ -33,6 +33,7 @@ SRCS =  cd.c \
 		signal_config.c \
 		utils3.c \
 		exit.c \
+		double_left_redirect.c \
 
 OBJS = ${SRCS:.c=.o}
 CHECK_OBJS = ${CHECK_SRCS:.c=.o}

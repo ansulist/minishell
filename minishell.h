@@ -115,6 +115,7 @@ bool	is_longlong(char *str);
 long long	ft_atoll(const char *str);
 void    ft_exit(t_cmdop *cmd);
 bool arestringsequal(const char *str1, const char *str2);
+int    double_left_redirect_exec(t_cmdop *cmd, t_env *env, int len);
 
 #endif
 

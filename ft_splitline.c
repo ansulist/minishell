@@ -159,8 +159,14 @@ int count_struct(char **av)
 		else
 		{
 			// we are in a redirection
-			nb_struct += 2;
-			i += 2;
+			if (i == 0) {
+				// heredoc case
+				nb_struct++;
+				i += 2;
+			} else {
+				nb_struct += 2;
+				i += 2;
+			}
 		}
 	}
 	return (nb_struct);
@@ -241,13 +247,18 @@ int fill_structs(char **av, t_cmdop *command)
 
 void print_struct(t_cmdop *cmd, int len)
 {
-	int i = 0;
-	int j = 0;
+	int i;
+	int j;
+
+	i = 0;
 	while (len > i)
 	{
-		printf("name: %s\n", cmd[i].name);
+		if (cmd[i].name != NULL) {
+			printf("name: %s\n", cmd[i].name);
+		}
 		printf("op: %d\n", cmd[i].operator);
-		if (cmd->args != NULL)
+		j = 0;
+		if (cmd[i].args != NULL)
 		{
 			while (cmd[i].args[j] != NULL)
 			{

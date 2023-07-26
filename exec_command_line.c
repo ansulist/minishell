@@ -62,19 +62,18 @@ int exec_command_line(t_cmdop *command_line, int len, t_env *env)
 	if (childpid == 0)
 	{
 		signal(SIGINT, child_signal);
-		if (len == 1)
-			 exec_command(command_line, env);
-		else if ((command_line + 1)->operator == PIPE)
-			 pipeline_exec(command_line, env, len);
-		else if ((command_line + 1)->operator == LEFT_REDIRECTION) {
-			left_redirect_exec(command_line, env, len);
-		}
-		else if ((command_line + 1)->operator == DOUBLE_LEFT_REDIRECTION) {
+		if (len == 1 && command_line->operator == DOUBLE_LEFT_REDIRECTION)
 			redirect_input_char(command_line);
-		} 
-		else {
+		else if (len == 1)
+			 exec_command(command_line, env);
+		else if (command_line[1].operator == PIPE)
+			 pipeline_exec(command_line, env, len);
+		else if (command_line[1].operator == LEFT_REDIRECTION)
+			left_redirect_exec(command_line, env, len);
+		else if (command_line[1].operator == DOUBLE_LEFT_REDIRECTION)
+			double_left_redirect_exec(command_line, env, len);
+		else
 			right_redirect_exec(command_line, env, len);
-		}
 		exit(0);
 	}
 	waitpid(childpid, &status, 0);
