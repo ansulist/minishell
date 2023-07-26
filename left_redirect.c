@@ -16,38 +16,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-bool arestringsequal(const char *str1, const char *str2)
-{
-	while (*str1 && *str2)
-	{
-		if (*str1 != *str2)
-			return false;
-		str1++;
-		str2++;
-	}
-	// Check if both strings have reached their end ('\0')
-	return (*str1 == '\0' && *str2 == '\0');
-}
-
-static void redirect_input_char(t_cmdop *cmd)
-{
-	char *buff;
-	int fd[2];
-
-	pipe(fd);
-	while (1)
-	{
-		buff = readline("> ");
-		if (arestringsequal(buff, cmd->name) == true)
-			break;
-		ft_putendl_fd(buff, fd[1]);
-	}
-	close(fd[1]);
-	dup2(fd[0], STDIN_FILENO);
-	close(fd[0]);
-	free(buff);
-}
-
+/*
 static void r_input(t_cmdop *cmd)
 {
 	int file;
@@ -55,7 +24,7 @@ static void r_input(t_cmdop *cmd)
 	char *error;
 
 	i = 0;
-	if ((cmd + 1)->name)
+	if (cmd->name)
 	{
 		while (cmd[i].operator == LEFT_REDIRECTION)
 			i++;
@@ -122,5 +91,15 @@ int redirect_exec(t_cmdop *cmd, t_env *env, int len)
 		exec_command(cmd, env);
 	else
 		pipeline_exec(cmd, env, len);
+	return (0);
+}
+*/
+
+
+int    left_redirect_exec(t_cmdop *cmd, t_env *env, int len)
+{
+	(void)cmd;
+	(void)env;
+	(void)len;
 	return (0);
 }

@@ -34,8 +34,9 @@ void	initialize_prompt(char **av, t_env *env)
 	(void)av;
 	while (1)
 	{
+		// @TOTO trim this line "   exit " should work or handle it as builtin
 		line = readline("\033[31m./minishell $ \033[0m");
-		if (line == NULL || !ft_strcmp(line, "exit"))
+		if (line == NULL)
 			exit(0);
 		if (line[0] == '\0' || check_spaces(line))
 		{
@@ -45,9 +46,9 @@ void	initialize_prompt(char **av, t_env *env)
 		add_history(line);
 		if (line)
 		{
-			printf("line is %s\n", line);
+			//printf("line is %s\n", line);
 			newline = rostring(line);
-			printf("after rostring is %s \n", newline);
+			//printf("after rostring is %s \n", newline);
 			check_syntaxerror(newline);
 
 			command_len = init_struct(newline, &command);
@@ -55,9 +56,9 @@ void	initialize_prompt(char **av, t_env *env)
 				free(line);
 				continue;
 			}
+
 			// function to check every struct and change the value in args to be path
 			exec_command_line(command, command_len, env);
-			
 			// TODO: free command
 
 			free(line);

@@ -1,4 +1,5 @@
 #include "libft.h"
+#include <stdio.h>
 
 char **ft_list_to_array(t_list *list)
 {
@@ -8,12 +9,21 @@ char **ft_list_to_array(t_list *list)
 
     tmp = list;
     i = 0;
-    array = malloc(ft_lstsize(list) + 1);
+    array = malloc(sizeof(char *) * (ft_lstsize(list) + 1));
     if (array == NULL)
         return (NULL);
     while (tmp != NULL)
     {
         array[i] = ft_strdup((char *)(tmp->content));
+        if (array[i] == NULL) {
+            i--;
+            while (i >= 0) {
+                free(array[i]);
+                i--;
+            }
+            free(array);
+            return (NULL);
+        }
         tmp = tmp->next;
         i++;
     }

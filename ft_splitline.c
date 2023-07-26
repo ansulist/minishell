@@ -260,6 +260,36 @@ void print_struct(t_cmdop *cmd, int len)
 	}
 }
 
+// TODO path
+int check_dollarsign(t_cmdop *cmd, int len, t_env *env)
+{
+	int i;
+	int j;
+	char *tmp;
+
+	i = 0;
+	j = 0;
+	while (i < len)
+	{
+		while (cmd[i].args[j])
+		{
+			if (ft_strncmp(cmd[i].args[j], "$", 1) == 0)
+			{
+				tmp = ft_strdup(cmd[i].args[j]);
+				cmd[i].args[j] = my_getenv(env, cmd[i].args[j]);
+				if (cmd[i].args[j] == NULL)
+				{
+					cmd[i].args[j] = tmp;
+					free(tmp);
+				}
+			}
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}
+
 int init_struct(char *str, t_cmdop **command)
 {
 	int nb_struct;
@@ -286,7 +316,7 @@ int init_struct(char *str, t_cmdop **command)
 		free(*command);
 		return (-1);
 	}
-	print_struct(*command, nb_struct);
+	// print_struct(*command, nb_struct);
 	free(av);
 	return (nb_struct);
 }

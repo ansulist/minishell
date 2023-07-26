@@ -56,6 +56,8 @@ static char *get_path_bin(t_env *env, char *cmd)
     char *path_bin;
 	char **path;
 
+ 	if (access(cmd, F_OK | X_OK) == 0)
+        return (ft_strdup(cmd));
 	path = get_full_path(env);
 	if (path == NULL)
 		return (NULL);
@@ -97,11 +99,9 @@ void    binary_command(t_env *env, char *cmd, char **args, int nb_args)
 	char **execve_args;
 	int i;
 
-	envp = NULL;
 	path_bin = get_path_bin(env, cmd);
 	if (path_bin == NULL)
 		return;
-
 	execve_args = malloc(sizeof(char **) * (nb_args + 2));
 	if (execve_args == NULL)
 	{
@@ -116,13 +116,18 @@ void    binary_command(t_env *env, char *cmd, char **args, int nb_args)
 		i++;
 	}
 	execve_args[i + 1] = NULL;
-	print_2d_array(envp);
+	envp = ft_list_to_array(env->vars);
+	if (envp == NULL) {
+		printf("List to array failed\n");
+		// @TODO handle error
+		return;
+	}
 	// Need to fork before
 	if(execve(path_bin, execve_args, envp) == -1)
 		perror("error");
 	// free 2D array
-	free(envp);
-	free(execve_args);
-	free(path_bin);
+	// free(envp);
+	// free(execve_args);
+	// free(path_bin);
 
 }

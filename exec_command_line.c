@@ -54,17 +54,26 @@ int exec_command_line(t_cmdop *command_line, int len, t_env *env)
 	pid_t childpid;
 	int status;
 
+	if (ft_strcmp(command_line->name, "exit") == 0)
+		ft_exit(command_line);
 	childpid = fork();
+	if (childpid == -1)
+		return (-1);
 	if (childpid == 0)
 	{
 		signal(SIGINT, child_signal);
 		if (len == 1)
 			 exec_command(command_line, env);
-		else if ((command_line + 1)->operator== PIPE)
+		else if ((command_line + 1)->operator == PIPE)
 			 pipeline_exec(command_line, env, len);
+		else if ((command_line + 1)->operator == LEFT_REDIRECTION) {
+			left_redirect_exec(command_line, env, len);
+		}
+		else if ((command_line + 1)->operator == DOUBLE_LEFT_REDIRECTION) {
+			redirect_input_char(command_line);
+		} 
 		else {
-			redirect_exec(command_line, env, len);
-			// TODO: handle redirection
+			right_redirect_exec(command_line, env, len);
 		}
 		exit(0);
 	}

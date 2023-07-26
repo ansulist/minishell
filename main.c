@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+long long	g_exit = 0;
+
 // int main(int argc, char **av, char **default_env) {
 //     t_env *env;
 //     (void)argc;

@@ -20,7 +20,6 @@ int pipe_left(t_cmdop *cmd, t_env *env, int fd[2])
 	// redirect eveything that was supposed to be written in STDOUT_FILENO to fd[1] (write in pipe)
 	dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
-	// Execute ls
 	exec_command(cmd, env);
 	return (0);
 }

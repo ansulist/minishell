@@ -22,13 +22,17 @@ SRCS =  cd.c \
 		get_path.c \
 		unset.c \
 		pipeline_exec2.c \
-		redirect.c \
+		left_redirect.c \
+		right_redirect.c \
+		heredoc.c \
 		initialize.c \
 		ft_splitline.c \
 		utils.c \
 		set_spaces.c \
 		check_errors.c \
 		signal_config.c \
+		utils3.c \
+		exit.c \
 
 OBJS = ${SRCS:.c=.o}
 CHECK_OBJS = ${CHECK_SRCS:.c=.o}

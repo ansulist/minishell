@@ -24,9 +24,12 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <errno.h>
-#include <fcntl.h>
+# include <fcntl.h>
 # include <stddef.h>
 # include "./libft/libft.h"
+# include <stdbool.h>
+
+#  define LLONG_MAX 9223372036854775807
 
 typedef struct s_red 
 {
@@ -100,11 +103,18 @@ void    binary_command(t_env *env, char *cmd, char **args, int nb_args);
 int ft_unset(t_env *env, char *key, char **args);
 int pipeline_exec(t_cmdop *cmd, t_env *env, int len);
 int exec_command(t_cmdop *cmd, t_env *env);
-int    redirect_exec(t_cmdop *cmd, t_env *env, int len);
+int    left_redirect_exec(t_cmdop *cmd, t_env *env, int len);
+int    right_redirect_exec(t_cmdop *cmd, t_env *env, int len);
 int display_env(t_env *env);
 int	ft_env(t_env *env, t_cmdop *cmd);
 int init_struct(char *str, t_cmdop **command);
 void	child_signal(int signal);
+void redirect_input_char(t_cmdop *cmd);
+bool	digits_or_signals(char *str);
+bool	is_longlong(char *str);
+long long	ft_atoll(const char *str);
+void    ft_exit(t_cmdop *cmd);
+bool arestringsequal(const char *str1, const char *str2);
 
 #endif
 
