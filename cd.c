@@ -40,8 +40,10 @@ int ft_move(t_env *env, char *path)
 
     if (path == NULL)
         return (0);
+    printf("path = %s\n", path);
     if (chdir(path) < 0)
     {
+        printf("error\n");
         perror(path);
         return (0);
     }
@@ -65,6 +67,7 @@ int ft_move(t_env *env, char *path)
 
 int ft_cd(t_env *env, char *path)
 {
+    printf("here in cd function\n");
     char *home;
     char *oldpwd;
     int ret;
@@ -72,7 +75,9 @@ int ft_cd(t_env *env, char *path)
 
     if (path == NULL || ft_strlen(path) == 0 || ft_strchr(path, '~') != 0)
     {
+        printf("here in cd after check\n");
         home = my_getenv(env, "HOME");
+        printf("home = %s\n", home);
         if (home == NULL)
             return (0);
         // only command cd do this
@@ -111,5 +116,4 @@ int ft_cd(t_env *env, char *path)
     // if no return home, you return to given path
     return (ft_move(env, path));
 }
-
 // last part with $HOME and some path (after parse change the $HOME to direct path)
