@@ -76,7 +76,7 @@ static char *get_path_bin(t_env *env, char *cmd)
         i++;
     }
 	// TODO : Replece with the correct string
-	ft_putstr_fd("Command Not Found\n", 1);
+	printf ("./minishell : %s : command not found\n", cmd);
     return (NULL);
 }
 
@@ -118,16 +118,15 @@ void    binary_command(t_env *env, char *cmd, char **args, int nb_args)
 	execve_args[i + 1] = NULL;
 	envp = ft_list_to_array(env->vars);
 	if (envp == NULL) {
-		printf("List to array failed\n");
-		// @TODO handle error
+		printf("./minishell : no such file or directory\n");
+		free(envp);
+		free(path_bin);
 		return;
 	}
 	// Need to fork before
 	if(execve(path_bin, execve_args, envp) == -1)
 		perror("error");
-	// free 2D array
-	// free(envp);
-	// free(execve_args);
-	// free(path_bin);
-
+	ft_free_twod_array(envp);
+	ft_free_twod_array(execve_args);
+	free(path_bin);
 }

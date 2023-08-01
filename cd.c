@@ -111,7 +111,7 @@ int ft_cd(t_env *env, char *path)
             free(oldpwd);
             return (ret);
         }
-        return (0);
+        return (EXIT_SUCCES);
     }
     // if no return home, you return to given path
     return (ft_move(env, path));

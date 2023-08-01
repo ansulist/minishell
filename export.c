@@ -85,16 +85,18 @@ int print_export(t_env *env)
 int ft_add_update_loop(t_env *env, char *key, char **args)
 {
     int i;
-    char *tmp;
+    char **tmp;
 
     i = 0;
     if (args == NULL || key == NULL)
         return (-1);
     while (args[i] != NULL)
     {
-        tmp = getkey(args[i]);
-        add_or_update(env, key, args[i]);
-        free(tmp);
+        tmp = ft_split(args[i], '=');
+        if (tmp == NULL)
+            return (-1);
+        add_or_update(env, tmp[0], tmp[1]);
+        ft_free_twod_array(tmp);
         i++;
     }
     return (0);

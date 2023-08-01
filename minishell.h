@@ -30,7 +30,7 @@
 # include <stdbool.h>
 
 #  define LLONG_MAX 9223372036854775807
-
+#  define EXIT_SUCCES 0
 typedef struct s_red 
 {
     char *input;
@@ -100,7 +100,7 @@ int	exec_command_line(t_cmdop *command_line, int len, t_env *env);
 int pwd();
 int	ft_export(t_env *env, char *cmd, char **args);
 void    binary_command(t_env *env, char *cmd, char **args, int nb_args);
-int ft_unset(t_env *env, char *key, char **args);
+int ft_unset(t_env *env, char **args);
 int pipeline_exec(t_cmdop *cmd, t_env *env, int len);
 int exec_command(t_cmdop *cmd, t_env *env);
 int    left_redirect_exec(t_cmdop *cmd, t_env *env, int len);
@@ -117,6 +117,9 @@ void    ft_exit(t_cmdop *cmd);
 bool arestringsequal(const char *str1, const char *str2);
 int    double_left_redirect_exec(t_cmdop *cmd, t_env *env, int len);
 int print_export(t_env *env);
+void	config_signal(void);
+int    ft_free_twod_array(char **str);
+char *ft_expand(char *line, t_env *env);
 
 #endif
 

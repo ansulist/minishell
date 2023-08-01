@@ -97,7 +97,7 @@ int	main(int ac, char **av, char **envp)
 		printf("invalid no of arguments\n");
 		return (0);
 	}
-
+	config_signal();
 	env = init_env(envp);
 	if (env == NULL)
 		return (-1);

@@ -28,6 +28,7 @@ void	initialize_prompt(char **av, t_env *env)
 	char	*line;
 	// char	*modifiedline;
 	char	*newline;
+	char	*newnewline;
 	t_cmdop *command;
 	int command_len;
 
@@ -46,14 +47,21 @@ void	initialize_prompt(char **av, t_env *env)
 		add_history(line);
 		if (line)
 		{
+			// TODO : function to look $ and replace with the value
 			//printf("line is %s\n", line);
 			newline = rostring(line);
 			//printf("after rostring is %s \n", newline);
-			check_syntaxerror(newline);
-
-			command_len = init_struct(newline, &command);
+			newnewline = ft_expand(newline, env);
+			if (newnewline == NULL)
+			{
+				free(line);
+				continue;
+			}
+			check_syntaxerror(newnewline);
+			command_len = init_struct(newnewline, &command);
 			if (command_len == -1) {
 				free(line);
+				free(newnewline);
 				continue;
 			}
 
@@ -62,6 +70,7 @@ void	initialize_prompt(char **av, t_env *env)
 			// TODO: free command
 
 			free(line);
+			free(newnewline);
 
 			// free(newline);
 

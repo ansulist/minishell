@@ -1,12 +1,15 @@
 #include "minishell.h"
 
-int ft_unset(t_env *env, char *key, char **args)
+int ft_unset(t_env *env, char **args)
 {
     int i;
 
     i = 0;
-    if (args == NULL)
-        delete_env_variable(env, key);
+    if (args[0] == NULL)
+    {
+        printf("here in unset\n");
+        delete_env_variable(env, args[i]);
+    }
     else if (args != NULL)
     {
         while (args[i])

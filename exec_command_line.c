@@ -24,7 +24,7 @@ int	buildins(t_cmdop *cmd, t_env *env)
 	if (ft_strcmp(cmd->name, "export") == 0)
 		return ft_export(env, cmd->name, cmd->args);
 	if (ft_strcmp(cmd->name, "unset") == 0)
-		return ft_export(env, cmd->name, cmd->args);
+		return ft_unset(env, cmd->args);
 	return (0);
 }
 

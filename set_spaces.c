@@ -124,7 +124,6 @@ char *rostring(char* string)
                         shift_index++;
                     }
                 }
-
                 length++;
                 i++;
             }

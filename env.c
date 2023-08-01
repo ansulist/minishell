@@ -59,7 +59,7 @@ int add_env_variable(t_env *env, char *key, char *value)
         return (-1);
     }
     ft_lstadd_back(&env->vars, new_var);
-    return (0);
+    return (EXIT_SUCCES);
 }
 
 void delete_env_variable_free(void *content)
@@ -91,7 +91,7 @@ int update_env_variable(t_list *var, char *key, char *value)
         return (-1);
     free(var->content);
     var->content = tmp;
-    return (0);
+    return (EXIT_SUCCES);
 }
 
 int add_or_update(t_env *env, char *key, char *value)

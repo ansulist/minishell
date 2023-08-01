@@ -34,6 +34,7 @@ SRCS =  cd.c \
 		utils3.c \
 		exit.c \
 		double_left_redirect.c \
+		expand.c \
 
 OBJS = ${SRCS:.c=.o}
 CHECK_OBJS = ${CHECK_SRCS:.c=.o}

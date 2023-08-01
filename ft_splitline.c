@@ -327,7 +327,7 @@ int init_struct(char *str, t_cmdop **command)
 		free(*command);
 		return (-1);
 	}
-	print_struct(*command, nb_struct);
+	//print_struct(*command, nb_struct);
 	free(av);
 	return (nb_struct);
 }
