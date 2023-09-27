@@ -6,7 +6,7 @@
 /*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 10:49:09 by ansulist          #+#    #+#             */
-/*   Updated: 2023/07/13 11:08:53 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/09/08 14:05:16 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static char **get_full_path(t_env *env)
     char *path;
 
     path = my_getenv(env, "PATH");
-    return (ft_split(path, ':'));
+    return (ft_newsplit(path, ':'));
 }
 
 static char *get_path_bin(t_env *env, char *cmd)
@@ -75,8 +75,6 @@ static char *get_path_bin(t_env *env, char *cmd)
         free(path_bin);
         i++;
     }
-	// TODO : Replece with the correct string
-	ft_putstr_fd("Command Not Found\n", 1);
     return (NULL);
 }
 
@@ -101,7 +99,11 @@ void    binary_command(t_env *env, char *cmd, char **args, int nb_args)
 
 	path_bin = get_path_bin(env, cmd);
 	if (path_bin == NULL)
-		return;
+	{
+		env->result = 127;
+		printf("./minishell : %s : command not found\n", cmd);
+		return ;
+	}
 	execve_args = malloc(sizeof(char **) * (nb_args + 2));
 	if (execve_args == NULL)
 	{
@@ -118,16 +120,9 @@ void    binary_command(t_env *env, char *cmd, char **args, int nb_args)
 	execve_args[i + 1] = NULL;
 	envp = ft_list_to_array(env->vars);
 	if (envp == NULL) {
-		printf("List to array failed\n");
 		// @TODO handle error
 		return;
 	}
-	// Need to fork before
 	if(execve(path_bin, execve_args, envp) == -1)
 		perror("error");
-	// free 2D array
-	// free(envp);
-	// free(execve_args);
-	// free(path_bin);
-
 }

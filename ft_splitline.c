@@ -6,7 +6,7 @@
 /*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 16:40:44 by Famahsha          #+#    #+#             */
-/*   Updated: 2023/07/19 15:11:14 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/09/08 14:58:23 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,9 +199,7 @@ int fill_structs(char **av, t_cmdop *command)
 			k = i;
 			// pass all the arguments
 			while (av[k] != NULL && is_operator(av[k]) == NONE)
-			{
 				k++;
-			}
 			command[j].nb_args = k - i;
 			command[j].args = malloc(sizeof(char *) * (k - i + 1));
 			if (command[j].args == NULL)
@@ -305,8 +303,9 @@ int init_struct(char *str, t_cmdop **command)
 {
 	int nb_struct;
 	char **av;
-
-	av = ft_split(str, ' ');
+	int x;
+	
+	av = ft_newsplit(str, ' ');
 	if (av == NULL)
 		return (-1);
 	nb_struct = count_struct(av);
@@ -327,7 +326,23 @@ int init_struct(char *str, t_cmdop **command)
 		free(*command);
 		return (-1);
 	}
-	// print_struct(*command, nb_struct);
+	x = 0;
+	while (x < nb_struct)
+	{
+		if ((*command)[x].operator != NONE)
+			x++;
+		else 
+		{
+			// tried with printf to check when is before the segfault
+			// and here is kinda the segfault came from 
+			// only redirection case,
+			// pipe works and regular command works too
+			// if (check_consecquotes((*command)[x].name) == -1)
+			// 	return (ft_cerror(), -1);
+			// remove_quotes((*command)[x].name);
+			x++;
+		}
+	}
 	free(av);
-	return (nb_struct);
+	return (nb_struct); 
 }

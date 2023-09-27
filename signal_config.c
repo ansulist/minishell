@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal_config.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/18 13:58:32 by ansulist          #+#    #+#             */
-/*   Updated: 2023/07/18 13:58:34 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/08/01 15:03:49 by Famahsha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	cut_signal(int signal)
 	{
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		rl_on_new_line();
-		//rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		rl_redisplay();
 	}
 }

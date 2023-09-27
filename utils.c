@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 16:57:58 by Famahsha          #+#    #+#             */
-/*   Updated: 2023/07/19 15:13:01 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/07/15 13:26:20 by Famahsha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,6 @@ int	check_pipes(char c)
 		return (1);
 	return (0);
 }
-
-// int	check_op(char c)
-// {
-// 	if (check_pipes(c) == 1)
-// 		return (1);
-// }
 
 int	ft_isspace(char c)
 {

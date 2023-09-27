@@ -6,7 +6,7 @@
 /*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 10:48:25 by ansulist          #+#    #+#             */
-/*   Updated: 2023/07/11 10:48:26 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/09/08 16:33:27 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,18 @@ char    *my_getenv(t_env *env, char *key)
         temp = temp->next;
     }
     return (NULL);
+}
+
+char *cut_path(char *str)
+{
+    int len;
+    char *ret;
+
+    len = ft_strlen(str) - 1;
+    while (str[len] != '/' && len > 0)
+        len--;
+    ret = ft_strndup(str, len);
+    return (ret);
 }
 
 int ft_move(t_env *env, char *path)
@@ -61,6 +73,18 @@ int ft_move(t_env *env, char *path)
     if (pwd != NULL)
         free(pwd);
     return (ret);
+}
+
+char	*save_env_var(t_env *env, char *key)
+{
+    t_list *var;
+	char *path;
+
+    var = ft_lstfind(env->vars, &cmp_var, key);
+    if (var == NULL)
+        return NULL;
+    path = ft_strdup((char *)(var->content) + ft_strlen(key) + 1);
+    return (path);
 }
 
 int ft_cd(t_env *env, char *path)
@@ -97,6 +121,15 @@ int ft_cd(t_env *env, char *path)
     }
     // if there is '-' after cd
     // you move to the prev path from old_pwd
+    if (ft_strncmp(path, "..", 1) == 0)
+    {
+        path = getcwd(NULL, 0);
+        if (path == NULL)
+            return (-1);
+        ft_move(env, cut_path(path));
+        free(path);
+        return (0);
+    }
     if (ft_strncmp(path, "-", 1) == 0)
     {
         oldpwd = my_getenv(env, "OLD_PWD");
@@ -108,8 +141,17 @@ int ft_cd(t_env *env, char *path)
         }
         return (0);
     }
+	if (ft_strncmp(path, "$", 1) == 0)
+	{
+		replace = save_env_var(env, path);
+		if (replace != NULL)
+		{
+			ret = ft_move(env, replace);
+			free(replace);
+			return (ret);
+		}
+		return (0);
+	}
     // if no return home, you return to given path
     return (ft_move(env, path));
 }
-
-// last part with $HOME and some path (after parse change the $HOME to direct path)

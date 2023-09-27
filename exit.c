@@ -32,7 +32,6 @@ void    ft_exit(t_cmdop *cmd)
                 g_exit = ft_atoll(cmd->args[0]);
             else
                 exit_non_nb_arg();
-
         }
         else
             exit_non_nb_arg();

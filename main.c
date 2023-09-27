@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 10:49:15 by ansulist          #+#    #+#             */
-/*   Updated: 2023/07/19 11:56:56 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/08/01 16:51:21 by Famahsha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,13 @@ long long	g_exit = 0;
 
 #include "minishell.h"
 
+
+int	ft_cerror(void)
+{
+	printf("zsh : command not found \n");
+	return (0);
+}
+
 int	ft_error(void)
 {
 	printf("zsh : parse error \n");
@@ -97,11 +104,10 @@ int	main(int ac, char **av, char **envp)
 		printf("invalid no of arguments\n");
 		return (0);
 	}
-
+	config_signal();
 	env = init_env(envp);
 	if (env == NULL)
 		return (-1);
-
 	initialize_prompt(av, env);
 	return (0);
 }

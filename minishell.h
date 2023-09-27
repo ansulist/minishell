@@ -6,7 +6,7 @@
 /*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 10:49:23 by ansulist          #+#    #+#             */
-/*   Updated: 2023/07/19 12:01:50 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/09/08 15:25:29 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,18 +67,29 @@ typedef struct s_cmdop {
 typedef struct s_env
 {
     t_list *vars;
+    int result;
 } t_env;
 
 void	initialize_prompt(char **av, t_env *env);
 t_cmdop *ft_splitline(char *str);
 
+
+int    ft_isspace(char c);
 int		check_pipes(char c);
 int		check_redirection(char c);
 int 	check_quotes(char c);
-void	check_syntaxerror(char *str);
+int		check_syntaxerror(char *str);
 int 	check_semicolumn(char *str);
 int 	check_quotecount(char *str);
 int	count_pipes(char *str);
+int	count_pipes(char *str);
+int		check_endline(char *str);
+int	check_consecquotes(char *str);
+int	check_quoteasafterred(char *str, int j);
+void	remove_quotes(char *str);
+char	**ft_newsplit(char const *s, char c);
+int	ft_cerror(void);
+char *process_special_chars(char *string, char *special_chars);
 
 int		ft_isspace(char c);
 char	*rostring(char* str);
@@ -116,6 +127,12 @@ long long	ft_atoll(const char *str);
 void    ft_exit(t_cmdop *cmd);
 bool arestringsequal(const char *str1, const char *str2);
 int    double_left_redirect_exec(t_cmdop *cmd, t_env *env, int len);
+int print_export(t_env *env);
+int cmp_var(void *s1, void *s2);
+char *ft_expand(char *line, t_env *env);
+void	config_signal(void);
+int count_struct(char **av);
+void rl_replace_line(const char *text, int clear_undo);
 
 #endif
 

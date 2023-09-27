@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 10:48:36 by ansulist          #+#    #+#             */
-/*   Updated: 2023/07/13 11:20:35 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/08/01 16:29:32 by Famahsha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,28 @@ int ft_echo_display_one(t_env *env, char *str)
     return (0);
 }
 
+char	*remove_echoquotes(char *str)
+{
+	char firstChar;
+
+	firstChar = *str;
+
+    if (firstChar == '\'' || firstChar == '\"') {
+        char *readPtr = str + 1; 
+        char *writePtr = str;  
+
+        while (*readPtr) {
+            if (*readPtr != firstChar) {
+                *writePtr = *readPtr;
+                writePtr++;
+            }
+            readPtr++;
+        }
+        *writePtr = '\0'; // Add the null terminator at the end
+    }
+	return (str);
+}
+
 int ft_echo(t_env *env, char **args)
 {
     int i;
@@ -64,6 +86,9 @@ int ft_echo(t_env *env, char **args)
 
     flag_n = 0;
     i = 0;
+    if (*args == NULL)
+        return (0);
+	*args = remove_echoquotes(*args);
     if (is_flag_n(args[0]) == 1)
     {
         flag_n = 1;

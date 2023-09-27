@@ -6,7 +6,7 @@
 /*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 12:23:16 by Famahsha          #+#    #+#             */
-/*   Updated: 2023/07/19 12:08:10 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/09/04 14:47:27 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,60 @@ int	check_spaces(char *str)
 	return (1);
 }
 
+int one_heredoc(t_cmdop *command_line)
+{
+	char *buff;
+
+	while (1)
+	{
+		buff = readline("> ");
+		if (buff == NULL)
+		{
+			return (-1);
+		}
+		if (arestringsequal(buff, command_line->name) == true)
+			return (0);
+	}
+	free(buff);
+}
+
+// TODO
+bool execute_all_heredoc(t_cmdop *command_line, int len)
+{
+	int i;
+	int childpid;
+	int status;
+
+	childpid = fork();
+	if (childpid == 0) {
+		signal(SIGINT, child_signal);
+		i = 0;
+		while (i < len)
+		{
+			if (command_line[i].operator== DOUBLE_LEFT_REDIRECTION)
+			{
+				one_heredoc(command_line + i);
+			}
+			i++;
+		}
+		exit(EXIT_SUCCESS);
+	} 
+	else
+		waitpid(childpid, &status, 0);
+	return (WEXITSTATUS(status) == EXIT_SUCCESS);
+}
+
 void	initialize_prompt(char **av, t_env *env)
 {
 	char	*line;
-	// char	*modifiedline;
 	char	*newline;
+	char	*newnewline;
 	t_cmdop *command;
 	int command_len;
 
 	(void)av;
 	while (1)
 	{
-		// @TOTO trim this line "   exit " should work or handle it as builtin
 		line = readline("\033[31m./minishell $ \033[0m");
 		if (line == NULL)
 			exit(0);
@@ -46,32 +88,29 @@ void	initialize_prompt(char **av, t_env *env)
 		add_history(line);
 		if (line)
 		{
-			//printf("line is %s\n", line);
-			newline = rostring(line);
-			//printf("after rostring is %s \n", newline);
-			check_syntaxerror(newline);
-
-			command_len = init_struct(newline, &command);
-			if (command_len == -1) {
+			newline = ft_expand(line, env);
+			if (newline == NULL)
+			{
 				free(line);
 				continue;
 			}
-
-			// function to check every struct and change the value in args to be path
-			exec_command_line(command, command_len, env);
+			newnewline = rostring(newline);
+			//newline = process_special_chars(newline, "<>");
+			//newline = process_special_chars(newline, ">");
+			if (check_syntaxerror(newnewline) == 1)
+				continue ;
+			command_len = init_struct(newnewline, &command);
+			if (command_len == -1) {
+				free(line);
+				free(newnewline);
+				continue;
+			}
+			if (execute_all_heredoc(command, command_len)) {
+				exec_command_line(command, command_len, env);
+			}
 			// TODO: free command
-
 			free(line);
-
-			// free(newline);
-
-			// printf("line is %s\n", line);
-			// modifiedline = rostring(line);
-			// printf("after rostring is %s \n", modifiedline);
-			// check_syntaxerror(modifiedline);
-			// ft_splitline(modifiedline);
-			// free(line);
-			// free(modifiedline);
+			free(newline);
 		}
 	}
 }

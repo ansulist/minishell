@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+         #
+#    By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/07 00:21:24 by ansulist          #+#    #+#              #
-#    Updated: 2023/07/19 12:09:43 by ansulist         ###   ########.fr        #
+#    Updated: 2023/08/01 19:54:06 by Famahsha         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,13 +27,18 @@ SRCS =  cd.c \
 		heredoc.c \
 		initialize.c \
 		ft_splitline.c \
+		split_words.c \
 		utils.c \
 		set_spaces.c \
+		set_redirecspace.c \
 		check_errors.c \
+		check_errors2.c \
 		signal_config.c \
 		utils3.c \
 		exit.c \
 		double_left_redirect.c \
+		expand.c \
+		free_struct.c \
 
 OBJS = ${SRCS:.c=.o}
 CHECK_OBJS = ${CHECK_SRCS:.c=.o}
@@ -46,7 +51,7 @@ RM = rm -rf
 all: ${NAME}
 ${NAME}: ${OBJS}
 	@${MAKE} -C libft
-	@${CC} ${CFLAGS} ${OBJS} ./libft/libft.a -lreadline -o ${NAME}
+	@${CC} ${CFLAGS} ${OBJS} ./libft/libft.a -lreadline -I/Users/kunyit/.brew/opt/readline/include -L/Users/kunyit/.brew/opt/readline/lib -o ${NAME}
 
 clean: 
 	@${MAKE} -C libft clean

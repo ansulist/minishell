@@ -51,6 +51,7 @@ int double_left_right(t_cmdop *cmd, int len, int fd[2])
 	int nb;
 
 	nb = count_consecutive_double_left_redirection(cmd, len);
+	printf("[count_consecutive_double_left_redirection, nb: %d]\n", nb);
 	close(fd[0]);
 	while (len > 0 && cmd->operator == DOUBLE_LEFT_REDIRECTION)
 	{
@@ -79,6 +80,7 @@ int    double_left_redirect_exec(t_cmdop *cmd, t_env *env, int len)
 		return (-1);
 	if (childpid == 0)
 	{
+		printf("[A]\n");
 		double_left_right(cmd + 1, len - 1, fd);
 		exit(0);
 	}
@@ -86,6 +88,7 @@ int    double_left_redirect_exec(t_cmdop *cmd, t_env *env, int len)
 	waitpid(childpid, &temp, 0);
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
+	printf("[B]\n");
 	exec_command(cmd, env);
 	close(fd[0]);
 	return (0);

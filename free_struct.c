@@ -1,32 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   free_struct.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/11 10:49:46 by ansulist          #+#    #+#             */
-/*   Updated: 2023/07/11 10:49:47 by ansulist         ###   ########.fr       */
+/*   Created: 2023/09/08 15:32:42 by ansulist          #+#    #+#             */
+/*   Updated: 2023/09/08 16:18:33 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int pwd()
-{
-    char *path;
+//TODO make a function to count the real struct after it is being made
 
-    path = getcwd(NULL, 0);
-    if (path == NULL) {
-        return (-1);
-    }
-    ft_putstr_fd(path, 1);
-    ft_putstr_fd("\n", 1);
-    free(path);
-    return (0);
+int	free_two_d_array(char **av)
+{
+	int	i;
+
+	i = 0;
+	while (av[i] != NULL)
+	{
+		free(av[i]);
+		i++;
+	}
+	free(av);
+	return (0);
 }
 
-/*int main()
+int	free_command_struct(t_cmdop *cmd)
 {
-    pwd();
-}*/
+	int	i;
+	int nb_struct;
+
+	nb_struct = count_struct(cmd->args);
+	i = 0;
+	while(i < nb_struct)
+	{
+		free(cmd->name);
+		free_two_d_array(cmd->args);
+		i++;
+	}
+	return (0);
+}
