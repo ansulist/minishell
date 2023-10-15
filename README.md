@@ -13,7 +13,7 @@ In 42 Minishell you only need to handle the operator of
 Buildins that you have to handle
 - EXIT -> to exit from the minishell (no argument)
 - UNSET -> to remove one variable in ENV (with agruments ex. `unset PATH`)
-- EXPORT -> to add one varibale in ENV (with agruments ex. export `PATH=ls`)
+- EXPORT -> to add one varibale in ENV (with agruments ex. `export PATH=ls`)
 - ENV -> to show the all the ENV Variable (no argument)
 - CD -> to move to another directory (with agruments ex. `cd /bin/ls`)
 - PWD -> to see your current directory (no argument)
