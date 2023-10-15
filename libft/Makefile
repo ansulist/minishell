@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+         #
+#    By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/07 17:17:27 by ansulist          #+#    #+#              #
-#    Updated: 2023/06/23 23:38:56 by ansulist         ###   ########.fr        #
+#    Updated: 2023/08/01 13:40:38 by Famahsha         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,6 @@ SRC = \
     ft_putendl_fd.c \
     ft_putnbr_fd.c \
     ft_putstr_fd.c \
-    ft_split.c \
     ft_strchr.c \
     ft_strdup.c \
     ft_striteri.c \

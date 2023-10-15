@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anitasulistiyawati <anitasulistiyawati@    +#+  +:+       +#+        */
+/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 13:28:53 by asulisti          #+#    #+#             */
-/*   Updated: 2022/11/18 13:18:29 by anitasulist      ###   ########.fr       */
+/*   Updated: 2023/10/10 14:07:06 by Famahsha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,4 @@ int	ft_atoi(const char *str)
 		i++;
 	}
 	return (minusorplus * realnb);
-}
-
-int	main (void)
-{
-	printf ("%d", atoi("-9223372036854775807"));
 }

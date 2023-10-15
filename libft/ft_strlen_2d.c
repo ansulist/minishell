@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strlen_2d.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/10 13:59:07 by Famahsha          #+#    #+#             */
+/*   Updated: 2023/10/10 13:59:22 by Famahsha         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
-int ft_strlen_2d(char **arr) {
-    int i;
+int	ft_strlen_2d(char **arr)
+{
+	int	i;
 
-    i = 0;
-    while (arr[i] != NULL)
-        i++;
-
-    return (i);
+	i = 0;
+	while (arr[i] != NULL)
+		i++;
+	return (i);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
+/*   ft_strncpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anitasulistiyawati <anitasulistiyawati@    +#+  +:+       +#+        */
+/*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 12:30:50 by asulisti          #+#    #+#             */
-/*   Updated: 2022/01/25 13:39:27 by anitasulist      ###   ########.fr       */
+/*   Updated: 2023/10/11 11:13:19 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,4 +25,4 @@ size_t	ft_strncpy(char *dest, const char *src, size_t size)
 		i++;
 	}
 	return (ft_strlen(src));
-}	
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anitasulistiyawati <anitasulistiyawati@    +#+  +:+       +#+        */
+/*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 17:19:17 by asulisti          #+#    #+#             */
-/*   Updated: 2022/01/24 12:58:27 by asulisti         ###   ########.fr       */
+/*   Updated: 2023/10/11 11:13:31 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	fake_strchr(const char *s1, char c)
 		i++;
 	}
 	return (0);
-}	
+}
 
 char	*ft_strtrim(char const *s1, char const *set)
 {

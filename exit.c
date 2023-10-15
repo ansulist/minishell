@@ -1,46 +1,63 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/08 13:16:10 by Famahsha          #+#    #+#             */
+/*   Updated: 2023/10/15 11:20:52 by ansulist         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-extern long long	g_exit;
-
-static void	exit_non_nb_arg(void)
+static void	exit_non_nb_arg(t_env *env, int status)
 {
-	g_exit = 2;
+	env->result = status;
 	ft_putendl_fd("./minishell : args is not number", STDERR_FILENO);
 }
 
-int ft_count_array(char **str)
+int	ft_count_array(char **str)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (str[i] != NULL)
-        i++;
-    return (i);
+	i = 0;
+	if (str == NULL)
+		return (0);
+	while (str[i] != NULL)
+		i++;
+	return (i);
 }
 
-void    ft_exit(t_cmdop *cmd)
+void	decide_result(t_cmdop *cmd, t_env *env)
 {
-    int nb_args;
+	if (is_longlong(cmd->args[0]) == true)
+		env->result = ft_atoi(cmd->args[0]);
+	else
+		exit_non_nb_arg(env, 255);
+}
 
-    nb_args = ft_count_array(cmd->args);
-    ft_putendl_fd("exit minishell, bye!", STDOUT_FILENO);
-    if (nb_args == 1)
-    {
-        if (digits_or_signals(cmd->args[0]) == true)
-        {
-            if (is_longlong(cmd->args[0]) == true)
-                g_exit = ft_atoll(cmd->args[0]);
-            else
-                exit_non_nb_arg();
-        }
-        else
-            exit_non_nb_arg();
-    }
-    else if (nb_args > 1)
-    {
-        g_exit = 2;
-        ft_putendl_fd("./minishell : Too many argument", STDERR_FILENO);
-    }
-    // TODO FREE EVERYTHING AFTER EXIT 
-    exit(g_exit);
+void	ft_exit(t_cmdop *cmd, t_env *env)
+{
+	int	nb_args;
+	int	ret;
+
+	nb_args = ft_count_array(cmd->args);
+	ft_putendl_fd("exit minishell, bye!", STDOUT_FILENO);
+	if (nb_args == 1)
+	{
+		if (digits_or_signals(cmd->args[0]) == true)
+			decide_result(cmd, env);
+		else
+			exit_non_nb_arg(env, 255);
+	}
+	else if (nb_args > 1)
+	{
+		env->result = 2;
+		ft_putendl_fd("./minishell : Too many argument", STDERR_FILENO);
+	}
+	ret = env->result;
+	free_everything(env);
+	exit(ret);
 }

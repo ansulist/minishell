@@ -6,123 +6,107 @@
 /*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 10:49:09 by ansulist          #+#    #+#             */
-/*   Updated: 2023/09/08 14:05:16 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/10/14 00:55:08 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// joining the s1 and s2 then free the s1
-char	*join_free(char *s1, char *s2)
+static char	**get_full_path(t_env *env)
 {
-	size_t	len_s1;
-	size_t	len_s2;
-	char	*appended;
-	size_t	i;
-	size_t	j;
+	char	*path;
+	char	**path_split;
 
-	if (!s1 || !s2)
-		return (NULL);
-	len_s1 = ft_strlen(s1);
-	len_s2 = ft_strlen(s2);
-	appended = malloc((len_s1 + len_s2 + 1) * sizeof(char));
-	if (!appended)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (j < len_s1)
-		appended[i++] = s1[j++];
-	j = 0;
-	while (j < len_s2)
-		appended[i++] = s2[j++];
-	appended[i] = '\0';
-	free(s1);
-	return (appended);
-}
-
-//getting the value of the path
-static char **get_full_path(t_env *env)
-{
-    char *path;
-
-    path = my_getenv(env, "PATH");
-    return (ft_newsplit(path, ':'));
-}
-
-static char *get_path_bin(t_env *env, char *cmd)
-{
-    int i;
-    char *tmp;
-    char *path_bin;
-	char **path;
-
- 	if (access(cmd, F_OK | X_OK) == 0)
-        return (ft_strdup(cmd));
-	path = get_full_path(env);
+	path = my_getenv(env, "PATH");
 	if (path == NULL)
 		return (NULL);
-    i = 0;
-    while (path[i])
-    {
-        // join each path with the "/"
-        tmp = ft_strjoin(path[i], "/");
-        // join the path with the cmd
-        path_bin = join_free(tmp, cmd);
-        // check if there is the path or no
-        // if there is then return the path to be executed
-        if (access(path_bin, F_OK | X_OK) == 0)
-            return (path_bin);
-        free(path_bin);
-        i++;
-    }
-    return (NULL);
+	path_split = ft_newsplit(path, ':');
+	free(path);
+	return (path_split);
 }
 
-void print_2d_array(char **str)
+int	get_path_bin(t_env *env, char *cmd, char **path_bin)
 {
-	int i;
+	char	**paths;
+	int		ret;
+
+	*path_bin = NULL;
+	if (access(cmd, F_OK) == 0)
+	{
+		if (access(cmd, X_OK) == 0)
+		{
+			*path_bin = ft_strdup(cmd);
+			if (*path_bin == NULL)
+				return (-1);
+			return (0);
+		}
+		printf("./minishell : %s : permission denied\n", cmd);
+		*path_bin = NULL;
+		return (126);
+	}
+	paths = get_full_path(env);
+	if (paths == NULL)
+		return (free_and_print(path_bin));
+	ret = get_path_bin_all(paths, cmd, path_bin);
+	ft_free_twod_array(paths);
+	return (ret);
+}
+
+void	print_2d_array(char **str)
+{
+	int	i;
 
 	i = 0;
 	while (str[i] != NULL)
 	{
-		printf ("%s\n", str[i]);
+		printf("%s\n", str[i]);
 		i++;
 	}
 }
 
-void    binary_command(t_env *env, char *cmd, char **args, int nb_args)
+char	**evecve_prepare(char *path_bin, char **args, int nb_args)
 {
-    char *path_bin;
-	char **envp;
-	char **execve_args;
-	int i;
+	char	**execve_args;
+	int		i;
 
-	path_bin = get_path_bin(env, cmd);
-	if (path_bin == NULL)
-	{
-		env->result = 127;
-		printf("./minishell : %s : command not found\n", cmd);
-		return ;
-	}
 	execve_args = malloc(sizeof(char **) * (nb_args + 2));
 	if (execve_args == NULL)
-	{
-		free(path_bin);
-		return ;
-	}
+		return (NULL);
 	execve_args[0] = path_bin;
 	i = 0;
-	while (i < nb_args) 
+	while (i < nb_args)
 	{
 		execve_args[i + 1] = args[i];
 		i++;
 	}
 	execve_args[i + 1] = NULL;
-	envp = ft_list_to_array(env->vars);
-	if (envp == NULL) {
-		// @TODO handle error
-		return;
+	return (execve_args);
+}
+
+void	binary_command(t_env *env, char *cmd, char **args, int nb_args)
+{
+	int		ret;
+	char	*path_bin;
+	char	**envp;
+	char	**execve_args;
+
+	ret = get_path_bin(env, cmd, &path_bin);
+	if (path_bin == NULL)
+	{
+		env->result = ret;
+		return ;
 	}
-	if(execve(path_bin, execve_args, envp) == -1)
+	execve_args = evecve_prepare(path_bin, args, nb_args);
+	if (execve_args == NULL)
+		return (free(path_bin));
+	envp = ft_list_to_array(env->vars);
+	if (envp == NULL)
+	{
+		ft_free_twod_array(execve_args);
+		return (free(path_bin));
+	}
+	if (execve(path_bin, execve_args, envp) == -1)
 		perror("error");
+	ft_free_twod_array(envp);
+	ft_free_twod_array(execve_args);
 }

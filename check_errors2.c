@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_errors2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
+/*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 18:58:50 by Famahsha          #+#    #+#             */
-/*   Updated: 2023/08/01 20:22:50 by Famahsha         ###   ########.fr       */
+/*   Updated: 2023/10/15 11:22:28 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,34 @@ int	check_piperror(char *str)
 		i++;
 	if (check_pipes(str[i]))
 		return (ft_error(), 1);
+	return (0);
+}
+
+int	check_quotecount(char *str)
+{
+	char	firstquote;
+	bool	insidequote;
+
+	firstquote = '\0';
+	insidequote = false;
+	while (*str)
+	{
+		if (*str == '"' || *str == '\'')
+		{
+			if (firstquote == '\0')
+				firstquote = *str;
+			if (*str == firstquote)
+				insidequote = !insidequote;
+			else
+			{
+				if (!insidequote)
+					return (-1);
+			}
+		}
+		str++;
+	}
+	if (insidequote)
+		return (1);
 	return (0);
 }
 
@@ -51,18 +79,30 @@ int	check_endline(char *str)
 	return (0);
 }
 
-void	remove_quotes(char *str)
+char	*remove_quotes(char *str)
 {
-	char	*newstr;
+	char	firstchar;
+	bool	insidequotes;
+	char	*readptr;
+	char	*writeptr;
 
-	newstr = str;
-	while (*str)
+	firstchar = '\0';
+	insidequotes = false;
+	readptr = str;
+	writeptr = str;
+	while (*readptr)
 	{
-		if (*str != '\"' && (*str != '\''))
+		if ((*readptr == '\'' || *readptr == '\"') && !insidequotes)
 		{
-			*newstr++ = *str;
+			firstchar = *readptr;
+			insidequotes = true;
 		}
-		str++;		
+		else if (*readptr == firstchar && insidequotes)
+			insidequotes = false;
+		else
+			*writeptr++ = *readptr;
+		readptr++;
 	}
-	*newstr = '\0';
+	*writeptr = '\0';
+	return (str);
 }

@@ -1,78 +1,48 @@
-int	is_space(char c)
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils2.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/10 13:29:28 by Famahsha          #+#    #+#             */
+/*   Updated: 2023/10/13 14:06:09 by Famahsha         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+void	bye_minishell(t_env *env)
 {
-	if ((c == ' ') || (c == '\t'))
-		return (1);
-	return (0);
+	printf("exit -> bye, Minishell");
+	free_env(env);
+	exit(0);
 }
 
-int	count_words(char *str)
+int	check_spaces(char *str)
 {
-	int idx;
-	int	begin_space;
-    int j;
-
-	begin_space = 0;
-	while (str[begin_space] != '\0' && is_space(str[begin_space]))
-		begin_space++;
-	idx = begin_space;
-	while (str[idx] != '\0')
+	while (*str)
 	{
-		if (str[idx] != '\0' && !is_space(str[idx]) && is_space(str[idx - 1]))
+		if (!ft_isspace(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
+int	one_heredoc(t_cmdop *command_line)
+{
+	char	*buff;
+
+	while (1)
+	{
+		buff = readline("> ");
+		if (buff == NULL)
 		{
-			while (str[idx] != '\0' && !is_space(str[idx]))
-			{
-				j++;
-				idx++;
-			}
-			j++;
+			return (-1);
 		}
-		idx++;
+		if (arestringsequal(buff, command_line->name) == true)
+			return (0);
 	}
-	return (j);
-}
-
-char *remove_space(char *str)
-{
-	int i;
-	char *res;
-	int j;
-	int len;
-
-	i = 0;
-	j = 0;
-	len = count_words(str) + 1;
-	res = (char *)malloc(len);
-	if (res == NULL)
-		return (NULL);
-	while (str[i] != '\0' && is_space(str[i]))
-		i++;
-	while (str[i] != '\0')
-	{
-		if (str[i] != '\0' && !is_space(str[i]) && is_space(str[i - 1]))
-		{
-			while (str[i] != '\0' && !is_space(str[i]))
-			{
-				res[j] = str[i];
-				printf ("%c\n", res[j]);
-				j++;
-				i++;
-			}
-			if (str[i] != '\0' && (j + 2) < len) {
-				res[j] = str[i];
-				j++;
-			}
-		}
-		i++;
-	}
-	res[j] = '\0';
-	return (res);
-}
-
-int	main(int ac, char **av)
-{
-	if (ac > 1)
-	{
-		printf ("[%s]\n", remove_space(av[1]));
-	}
-	return (0);
+	free(buff);
 }

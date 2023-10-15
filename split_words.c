@@ -3,29 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   split_words.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
+/*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 13:21:32 by Famahsha          #+#    #+#             */
-/*   Updated: 2023/09/04 13:07:53 by Famahsha         ###   ########.fr       */
+/*   Updated: 2023/10/09 23:21:10 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
-int	skip_quoted_string(const char *s, int i)
-{
-	char	c;
-
-	if ((s[i] == 39 || s[i] == 34))
-	{
-		c = s[i];
-		i++;
-		while (s[i] != c && s[i])
-			i++;
-	}
-	return (i);
-} 
 
 int	count_words(char const *s, char c)
 {
@@ -46,7 +31,8 @@ int	count_words(char const *s, char c)
 			words++;
 			flag = 0;
 		}
-		i++;
+		if (s[i])
+			i++;
 	}
 	return (words);
 }
@@ -88,8 +74,11 @@ int	measure_string(const char *s, int i, char c)
 				strl++;
 			}
 		}
-		if (i++ >= 0)
-			strl++;
+		if (s[i])
+		{
+			if (i++ >= 0)
+				strl++;
+		}
 	}
 	return (strl);
 }
@@ -127,21 +116,5 @@ char	**ft_newsplit(char const *s, char c)
 	if (!a)
 		return (0);
 	split_words(a, c, s, words);
-	return (a);	
+	return (a);
 }
-
-
-// int main() {
-//     const char *input = " hi hello \" yes\"  \" world\" ";
-//     char **words = ft_split(input, ' ');
-
-//     int i = 0;
-//     while (words[i] != NULL) {
-//         printf("%s\n", words[i]);
-//         free(words[i]);
-//         i++;
-//     }
-
-//     free(words);
-//     return 0;
-// }

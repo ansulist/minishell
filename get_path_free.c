@@ -1,31 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   unset.c                                            :+:      :+:    :+:   */
+/*   get_path_free.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/08 13:47:14 by Famahsha          #+#    #+#             */
-/*   Updated: 2023/10/08 13:48:12 by Famahsha         ###   ########.fr       */
+/*   Created: 2023/10/13 14:02:35 by Famahsha          #+#    #+#             */
+/*   Updated: 2023/10/13 14:02:45 by Famahsha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_unset(t_env *env, char *key, char **args)
+int	free_and_print(char **path_bin)
 {
-	int	i;
+	ft_putstr_fd("./minishell : ", 2);
+	ft_putstr_fd(*path_bin, 2);
+	ft_putstr_fd(" : command not found\n", 2);
+	free(*path_bin);
+	*path_bin = NULL;
+	return (127);
+}
 
-	i = 0;
-	if (args == NULL)
-		delete_env_variable(env, key);
-	else if (args != NULL)
-	{
-		while (args[i])
-		{
-			delete_env_variable(env, args[i]);
-			i++;
-		}
-	}
-	return (0);
+int	free_and_print_denied(char **path_bin)
+{
+	ft_putstr_fd("./minishell : ", 2);
+	ft_putstr_fd(*path_bin, 2);
+	ft_putstr_fd(" : command not found\n", 2);
+	free(*path_bin);
+	*path_bin = NULL;
+	return (127);
 }

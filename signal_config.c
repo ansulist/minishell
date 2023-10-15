@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   signal_config.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
+/*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/18 13:58:32 by ansulist          #+#    #+#             */
-/*   Updated: 2023/08/01 15:03:49 by Famahsha         ###   ########.fr       */
+/*   Updated: 2023/10/15 11:20:37 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern long long	g_exit_status;
+int	g_exit_status;
 
 void	child_signal(int signal)
 {
@@ -23,25 +23,38 @@ void	child_signal(int signal)
 	}
 }
 
-void	cut_signal(int signal)
+void	signal_controller(int sig_num)
 {
-	if (signal == SIGINT)
+	if (sig_num == SIGINT)
 	{
-		ft_putchar_fd('\n', STDOUT_FILENO);
+		if (waitpid(-1, &g_exit_status, WNOHANG) == -1)
+		{
+			rl_on_new_line();
+			rl_redisplay();
+			write(STDERR_FILENO, "  \n", 4);
+			rl_replace_line("", 0);
+			rl_on_new_line();
+			rl_redisplay();
+			g_exit_status = 1;
+		}
+	}
+	else if (sig_num == SIGQUIT)
+	{
 		rl_on_new_line();
-		rl_replace_line("", 0);
 		rl_redisplay();
+		ft_putstr_fd("  \b\b", 2);
+		g_exit_status = 131;
+	}
+	else if (sig_num == SIGSEGV)
+	{
+		printf("_____SEGMENTATION_____FAULT_____");
+		exit(EXIT_FAILURE);
 	}
 }
 
-void	config_signal(void)
+void	trap_signals(void)
 {
-	struct sigaction	sa;
-
-	sa.sa_handler = &cut_signal;
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
-	sigaddset(&sa.sa_mask, SIGINT);
-	sigaction(SIGINT, &sa, NULL);
-	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, signal_controller);
+	signal(SIGQUIT, signal_controller);
+	signal(SIGSEGV, signal_controller);
 }

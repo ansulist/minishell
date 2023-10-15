@@ -6,152 +6,85 @@
 /*   By: ansulist <ansulist@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 10:48:25 by ansulist          #+#    #+#             */
-/*   Updated: 2023/09/08 16:33:27 by ansulist         ###   ########.fr       */
+/*   Updated: 2023/10/12 22:50:35 by ansulist         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// ft_move moves to the given path
-// but ut doesnt handle home
-
-//finding the value of every key in the env
-char    *my_getenv(t_env *env, char *key)
+int	tilde_path(t_env *env, char *path, char *home)
 {
-    t_list *temp;
+	int		ret;
+	char	*replace;
 
-    temp = env->vars;
-    while (temp != NULL)
-    {
-		// if it is match and next to it is '='
-		// then copy the value and return it
-        if (ft_strncmp(key, (char *)temp->content, ft_strlen(key)) == 0 && ((char *)temp->content)[ft_strlen(key)] == '=')
-            return (ft_strdup(temp->content + ft_strlen(key) + 1));
-        temp = temp->next;
-    }
-    return (NULL);
+	replace = ft_strreplace(path, "~", home);
+	if (replace == NULL)
+		return (-1);
+	ret = ft_move(env, replace);
+	free(replace);
+	return (ret);
 }
 
-char *cut_path(char *str)
+int	path_dotdot(t_env *env)
 {
-    int len;
-    char *ret;
+	char	*path;
 
-    len = ft_strlen(str) - 1;
-    while (str[len] != '/' && len > 0)
-        len--;
-    ret = ft_strndup(str, len);
-    return (ret);
+	path = getcwd(NULL, 0);
+	if (path == NULL)
+		return (-1);
+	ft_move(env, cut_path(path));
+	free(path);
+	return (0);
 }
 
-int ft_move(t_env *env, char *path)
+int	path_dash(t_env *env)
 {
-    char *pwd;
-    char *new_path;
-    int ret;
+	char	*oldpwd;
+	int		ret;
 
-    if (path == NULL)
-        return (0);
-    if (chdir(path) < 0)
-    {
-        perror(path);
-        return (0);
-    }
-    new_path = getcwd(NULL, 0);
-    if (new_path == NULL)
-        return (-1);
-    pwd = my_getenv(env, "PWD");
-    ret = add_or_update(env, "PWD", new_path);
-    if (ret != -1)
-    {
-        if (pwd == NULL)
-            ret = add_or_update(env, "OLD_PWD", new_path);
-        else
-            ret = add_or_update(env, "OLD_PWD", pwd);
-    }
-    free(new_path);
-    if (pwd != NULL)
-        free(pwd);
-    return (ret);
+	oldpwd = my_getenv(env, "OLD_PWD");
+	if (oldpwd == NULL)
+		return (-1);
+	ret = ft_move(env, oldpwd);
+	free(oldpwd);
+	return (ret);
 }
 
-char	*save_env_var(t_env *env, char *key)
+int	path_dollarsign(t_env *env, char *path)
 {
-    t_list *var;
-	char *path;
+	char	*replace;
+	int		ret;
 
-    var = ft_lstfind(env->vars, &cmp_var, key);
-    if (var == NULL)
-        return NULL;
-    path = ft_strdup((char *)(var->content) + ft_strlen(key) + 1);
-    return (path);
+	replace = save_env_var(env, path);
+	if (replace == NULL)
+		return (-1);
+	ret = ft_move(env, replace);
+	free(replace);
+	return (ret);
 }
 
-int ft_cd(t_env *env, char *path)
+int	ft_cd(t_env *env, char *path)
 {
-    char *home;
-    char *oldpwd;
-    int ret;
-    char *replace;
+	char	*home;
+	int		ret;
 
-    if (path == NULL || ft_strlen(path) == 0 || ft_strchr(path, '~') != 0)
-    {
-        home = my_getenv(env, "HOME");
-        if (home == NULL)
-            return (0);
-        // only command cd do this
-        if (path == NULL || ft_strlen(path) == 0)
-            ret = ft_move(env, home);
-        // if there is '~' somewhere
-        else 
-        {
-            // changing the ~ with the home
-            replace = ft_strreplace(path, "~", home);
-            if (replace == NULL)
-            {
-                free(home);
-                return (-1);
-            }
-            // then move to home
-            ret = ft_move(env, replace);
-            free(replace);
-        }
-        free(home);
-        return (ret);
-    }
-    // if there is '-' after cd
-    // you move to the prev path from old_pwd
-    if (ft_strncmp(path, "..", 1) == 0)
-    {
-        path = getcwd(NULL, 0);
-        if (path == NULL)
-            return (-1);
-        ft_move(env, cut_path(path));
-        free(path);
-        return (0);
-    }
-    if (ft_strncmp(path, "-", 1) == 0)
-    {
-        oldpwd = my_getenv(env, "OLD_PWD");
-        if (oldpwd != NULL)
-        {
-            ret = ft_move(env, oldpwd);
-            free(oldpwd);
-            return (ret);
-        }
-        return (0);
-    }
-	if (ft_strncmp(path, "$", 1) == 0)
+	if (path == NULL || ft_strlen(path) == 0 || ft_strchr(path, '~') != 0)
 	{
-		replace = save_env_var(env, path);
-		if (replace != NULL)
-		{
-			ret = ft_move(env, replace);
-			free(replace);
-			return (ret);
-		}
-		return (0);
+		home = my_getenv(env, "HOME");
+		if (home == NULL)
+			return (0);
+		if (path == NULL || ft_strlen(path) == 0)
+			ret = ft_move(env, home);
+		else
+			ret = tilde_path(env, path, home);
+		free(home);
+		return (ret);
 	}
-    // if no return home, you return to given path
-    return (ft_move(env, path));
+	if (path[0] == '.' && path[1] == '.')
+		return (path_dotdot(env));
+	if (ft_strncmp(path, "-", 1) == 0)
+		return (path_dash(env));
+	if (ft_strncmp(path, "$", 1) == 0)
+		return (path_dollarsign(env, path));
+	return (ft_move(env, path));
 }

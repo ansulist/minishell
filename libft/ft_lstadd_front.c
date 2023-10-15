@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anitasulistiyawati <anitasulistiyawati@    +#+  +:+       +#+        */
+/*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 18:06:55 by ansulist          #+#    #+#             */
-/*   Updated: 2022/11/14 23:57:05 by anitasulist      ###   ########.fr       */
+/*   Updated: 2023/10/10 14:01:51 by Famahsha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 void	ft_lstadd_front(t_list **lst, t_list *new)
 {
-    t_list  *temp;
+	t_list	*temp;
 
-    if (*lst == NULL)
-    {
-        *lst = new;
-        return ;
-    }
-    temp = *lst;
-    *lst = new;
-    new->next = temp; 
+	if (*lst == NULL)
+	{
+		*lst = new;
+		return ;
+	}
+	temp = *lst;
+	*lst = new;
+	new->next = temp;
 }
 // fungsi ini berguna untung ngisi konten ke baris pertama di lst
 // caranya adalah dengan cara masukin kontent awal ke temporary

@@ -6,7 +6,7 @@
 /*   By: Famahsha < famahsha@student.42abudhabi.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:38:42 by Famahsha          #+#    #+#             */
-/*   Updated: 2023/08/01 19:21:06 by Famahsha         ###   ########.fr       */
+/*   Updated: 2023/10/13 16:03:52 by Famahsha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,26 +30,6 @@ int	count_pipes(char *string)
 	return (count);
 }
 
-int	check_quotecount(char *str)
-{
-	int	count;
-
-	count = 0;
-	while (*str)
-	{
-		if (check_quotes(*str) == 1)
-			count++;
-		str++;
-	}
-	if (count % 2 != 0)
-	{
-		ft_error();
-		return (1);
-	}
-	else
-		return (count);
-}
-
 char	*rostring(char *string)
 {
 	int		count;
@@ -61,7 +41,7 @@ char	*rostring(char *string)
 	result = temp;
 	while (*string)
 	{
-		if (*string == '|')
+		if (*string == '|' && ft_strlen(string) != 1)
 		{
 			if (!ft_isspace(*(string - 1)))
 				*temp++ = ' ';
